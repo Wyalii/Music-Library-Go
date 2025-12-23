@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	imageToASCII "github.com/Wyalii/ASCII-Converter"
 	tea "github.com/charmbracelet/bubbletea"
+	// "github.com/charmbracelet/bubbles/spinner"
+	// "github.com/charmbracelet/lipgloss"
 )
 
 func main() {
+	imageToASCII.ConvertImageToASCII("/home/wyalii/Downloads/randomImage.jpg", 50)
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
@@ -23,7 +27,7 @@ type model struct {
 
 func initialModel() model {
 	return model{
-		choices:  []string{"Buy carrots", "Buy celery", "Buy kohlrabi"},
+		choices:  []string{"Music List", "Download Music", "Create Playlist"},
 		selected: make(map[int]struct{}),
 	}
 }
@@ -33,7 +37,7 @@ func (m model) Init() tea.Cmd {
 }
 func (m model) View() string {
 	// The header
-	s := "What should we buy at the market?\n\n"
+	s := "Welcome to GO MUSIC LIBRARY\n\n"
 
 	// Iterate over our choices
 	for i, choice := range m.choices {

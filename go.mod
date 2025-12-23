@@ -5,6 +5,7 @@ go 1.25.5
 require github.com/charmbracelet/bubbletea v1.3.10
 
 require (
+	github.com/Wyalii/ASCII-Converter v0.0.0-20251223133657-a15d4eb6797b // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/colorprofile v0.2.3-0.20250311203215-f60798e515dc // indirect
 	github.com/charmbracelet/lipgloss v1.1.0 // indirect
