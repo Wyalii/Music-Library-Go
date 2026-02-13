@@ -6,16 +6,22 @@ import (
 )
 
 func main() {
+	tview.Styles.PrimitiveBackgroundColor = tcell.ColorBlack
 	app := tview.NewApplication()
 	app.SetTitle("Music-Library")
-	background := tview.NewBox().SetBackgroundColor(tcell.ColorDarkSlateGray)
-	trackBox := tview.NewBox().SetBorder(true).SetTitle("Tracks:")
-	musicList := tview.NewList().
-		AddItem("Song 1", "Artist A", '1', nil).
-		AddItem("Song 2", "Artist B", '2', nil).
-		AddItem("Song 3", "Artist C", '3', nil)
-	musicList.SetBorder(true).SetTitle("Music List:")
-	mainFlex := tview.NewFlex().AddItem(musicList, 30, 1, true).AddItem(trackBox, 0, 2, false)
-	pages := tview.NewPages().AddPage("background", background, true, true).AddPage("main", mainFlex, true, true)
+	menu := tview.NewList().AddItem("Search", "Search Songs", 's', nil).AddItem("Library", "Your music library", 'l', nil).AddItem("Playlists", "Your playlists", 'p', nil)
+	menu.SetBorder(true).SetTitle("Main Menu")
+
+	pages := tview.NewPages()
+	searchPage := tview.NewTextView().SetText("Search Page Content")
+	searchPage.SetBorder(true).SetTitle("Search")
+
+	libraryPage := tview.NewTextView().SetText("Library Page Content")
+	libraryPage.SetBorder(true).SetTitle("Library")
+
+	playlistsPage := tview.NewTextView().SetText("Playlist Page Content")
+	playlistsPage.SetBorder(true).SetTitle("Playlists")
+
+	pages.AddPage("search", searchPage, true, true).AddPage("library", libraryPage, true, true).AddPage("playlists", playlistsPage, true, true)
 	app.SetRoot(pages, true).Run()
 }
