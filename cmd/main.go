@@ -13,6 +13,12 @@ func main() {
 	menu.SetBorder(true).SetTitle("Main Menu")
 
 	searchBar := tview.NewInputField().SetLabel("Search Songs:").SetFieldWidth(0)
+	playlistsArray := tview.NewList()
+	playlistsArray.SetBorder(true)
+	playlistsArray.SetTitle("Your Playlists:")
+	playlistsArray.AddItem("Rock Playlist", "My favorite rock songs", 0, nil)
+	playlistsArray.AddItem("Workout Mix", "High energy tracks", 0, nil)
+	playlistsArray.AddItem("Chill", "Relaxing music", 0, nil)
 
 	pages := tview.NewPages()
 	searchPage := tview.NewFlex()
@@ -24,8 +30,10 @@ func main() {
 
 	playlistsPage := tview.NewFlex()
 	playlistsPage.SetBorder(true).SetTitle("Playlists")
+	playlistsPage.AddItem(playlistsArray, 40, 1, true)
+
 	content := searchPage
-	pages.AddPage("Search", searchPage, true, true).AddPage("Library", libraryPage, true, true).AddPage("Playlists", playlistsPage, true, true)
+	pages.AddPage("Search", searchPage, true, true).AddPage("Library", libraryPage, true, false).AddPage("Playlists", playlistsPage, true, false)
 
 	menu.SetChangedFunc(func(index int, mainText string, secondary string, shortcut rune) {
 		pages.SwitchToPage(mainText)
