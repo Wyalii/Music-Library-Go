@@ -22,6 +22,12 @@ func main() {
 	playlistsPage := tview.NewTextView().SetText("Playlist Page Content")
 	playlistsPage.SetBorder(true).SetTitle("Playlists")
 
-	pages.AddPage("search", searchPage, true, true).AddPage("library", libraryPage, true, true).AddPage("playlists", playlistsPage, true, true)
-	app.SetRoot(pages, true).Run()
+	pages.AddPage("Search", searchPage, true, true).AddPage("Library", libraryPage, true, true).AddPage("Playlists", playlistsPage, true, true)
+
+	menu.SetChangedFunc(func(index int, mainText string, secondary string, shortcut rune) {
+		pages.SwitchToPage(mainText)
+	})
+
+	layout := tview.NewFlex().AddItem(menu, 25, 0, true).AddItem(pages, 0, 1, false)
+	app.SetRoot(layout, true).Run()
 }
