@@ -1,17 +1,42 @@
 package main
 
 import (
+	"GoMusicLibrary/api"
+	"log"
+
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 func main() {
 	app := tview.NewApplication()
+
 	flex := tview.NewFlex()
 	menu := tview.NewList()
-	songsView := tview.NewBox().SetBorder(true).SetTitle(" Songs ")
+	songsView := tview.NewList()
+	songsView.SetBorder(true)
+	songsView.SetTitle(" Songs ")
 	playlistsView := tview.NewBox().SetBorder(true).SetTitle(" Your Playlists ")
 	var currentRight tview.Primitive = songsView
+	loadSongs := func(query string) {
+		songs, err := api.SearchSongs(query)
+		if err != nil {
+			log.Println("Error fetching songs:", err)
+			return
+		}
+		songsView.Clear()
+
+		for _, song := range songs {
+			s := song
+			songsView.AddItem(
+				s.TrackName,
+				s.ArtistName,
+				0,
+				func() {
+
+				})
+		}
+	}
 
 	showInRight := func(view tview.Primitive) {
 		flex.RemoveItem(currentRight)
@@ -23,6 +48,7 @@ func main() {
 	menu.SetTitle("Left Panel.")
 	menu.AddItem("Songs", "Browse songs", 's', func() {
 		showInRight(songsView)
+		loadSongs("queens")
 	})
 	menu.AddItem("Playlists", "Your PLaylists", 'p', func() {
 		showInRight(playlistsView)
