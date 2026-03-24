@@ -1,57 +1,60 @@
 package main
 
 import (
-	"GoMusicLibrary/api"
-	"log"
-
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 func main() {
 	app := tview.NewApplication()
-
-	flex := tview.NewFlex()
+	pages := tview.NewPages()
 	menu := tview.NewList()
-	songsView := tview.NewList()
-	songsView.SetBorder(true)
-	songsView.SetTitle(" Songs ")
+	mainFlex := tview.NewFlex()
+
+	songsList := tview.NewList()
+	songSearchInput := tview.NewInputField()
+
+	songsPage := tview.NewFlex()
+	songsPage.SetDirection(tview.FlexRow)
+	songsPage.AddItem(songSearchInput, 3, 1, false)
+	songsPage.AddItem(songsList, 0, 1, false)
+
+	songSearchInput.SetLabel("Search: ")
+	songSearchInput.SetPlaceholder("Type a song name...")
+	songSearchInput.SetBorder(true)
+
 	playlistsView := tview.NewBox().SetBorder(true).SetTitle(" Your Playlists ")
-	var currentRight tview.Primitive = songsView
-	loadSongs := func(query string) {
-		songs, err := api.SearchSongs(query)
-		if err != nil {
-			log.Println("Error fetching songs:", err)
-			return
-		}
-		songsView.Clear()
 
-		for _, song := range songs {
-			s := song
-			songsView.AddItem(
-				s.TrackName,
-				s.ArtistName,
-				0,
-				func() {
+	// loadSongs := func(query string) {
+	// 	songs, err := api.SearchSongs(query)
+	// 	if err != nil {
+	// 		log.Println("Error fetching songs:", err)
+	// 		return
+	// 	}
+	// 	songsList.Clear()
 
-				})
-		}
-	}
+	// 	for _, song := range songs {
+	// 		s := song
+	// 		songsList.AddItem(
+	// 			s.TrackName,
+	// 			s.ArtistName,
+	// 			0,
+	// 			func() {
 
-	showInRight := func(view tview.Primitive) {
-		flex.RemoveItem(currentRight)
-		flex.AddItem(view, 0, 1, true)
-		currentRight = view
-		app.SetFocus(view)
-	}
+	// 			})
+	// 	}
+	// }
+
 	menu.SetBorder(true)
 	menu.SetTitle("Left Panel.")
 	menu.AddItem("Songs", "Browse songs", 's', func() {
-		showInRight(songsView)
-		loadSongs("queens")
+		pages.SwitchToPage("songs page")
+		app.SetFocus(songSearchInput)
+
 	})
 	menu.AddItem("Playlists", "Your PLaylists", 'p', func() {
-		showInRight(playlistsView)
+		pages.SwitchToPage("playlist page")
+
 	})
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
@@ -66,8 +69,11 @@ func main() {
 		return event
 	})
 
-	flex.AddItem(menu, 30, 1, true)
-	flex.AddItem(songsView, 0, 1, false)
+	pages.AddPage("songs page", songsPage, true, true)
+	pages.AddPage("playlist page", playlistsView, true, false)
 
-	app.SetRoot(flex, true).Run()
+	mainFlex.AddItem(menu, 0, 1, true)
+	mainFlex.AddItem(pages, 0, 2, false)
+
+	app.SetRoot(mainFlex, true).Run()
 }
